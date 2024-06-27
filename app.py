@@ -4,6 +4,7 @@ import re
 
 import discord
 from discord.ext import commands
+from hbutils.string import plural_word
 from hbutils.system import TemporaryDirectory
 
 from maid_assistant.calc import safe_eval
@@ -33,13 +34,15 @@ async def calc_command(ctx, *, expression: str):
 async def danbooru_command(ctx, *, tags_text: str):
     tags = list(filter(bool, re.split(r'\s+', tags_text)))
     with TemporaryDirectory() as td:
+        result = query_danbooru_images(tags, count=10)
         embed = discord.Embed(
             title="Danbooru Images",
-            description=f"This is the search result of tags: {tags!r}",
+            description=f"This is the search result of tags: {tags!r}.\n"
+                        f"{plural_word(len(result), 'image')} found in total.",
             color=0x00ff00
         )
         files = []
-        for id_, image in query_danbooru_images(tags, count=10):
+        for id_, image in result:
             dst_file = os.path.join(td, f'{id_}.webp')
             image.save(dst_file, quality=90)
             files.append(discord.File(dst_file, filename=os.path.basename(dst_file)))

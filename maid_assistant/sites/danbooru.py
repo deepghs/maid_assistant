@@ -1,6 +1,5 @@
 import mimetypes
 from functools import lru_cache
-from itertools import islice
 from pprint import pprint
 from typing import List, Iterator
 
@@ -48,11 +47,13 @@ def query_danbooru_images(tags: List[str], count: int = 4):
     images = []
     exist_ids = set()
     with pipe.batch_retrieve(_iter_ids(tags)) as session:
-        for i, item in enumerate(islice(session, count)):
+        for i, item in enumerate(session):
             item: PipeItem
             if item.id not in exist_ids:
                 images.append((item.id, item.data))
                 exist_ids.add(item.id)
+                if len(images) >= count:
+                    break
     return images
 
 
