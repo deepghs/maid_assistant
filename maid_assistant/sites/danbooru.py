@@ -38,7 +38,8 @@ def _iter_ids(tags: List[str]) -> Iterator[int]:
             break
 
         for item in resp.json():
-            yield item['id']
+            if not item.get('parent_id'):
+                yield item['id']
 
 
 def query_danbooru_images(tags: List[str], count: int = 4):
