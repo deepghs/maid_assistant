@@ -43,7 +43,6 @@ async def danbooru_command(ctx, *, tags_text: str):
             dst_file = os.path.join(td, f'{id_}.webp')
             image.save(dst_file, quality=90)
             files.append(discord.File(dst_file, filename=os.path.basename(dst_file)))
-            embed.add_field(name=f'#{id_}', value=f"attachment://{os.path.basename(dst_file)}", inline=False)
 
         await ctx.send(embed=embed, files=files)
 
