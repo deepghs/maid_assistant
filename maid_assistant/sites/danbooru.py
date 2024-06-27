@@ -46,10 +46,13 @@ def query_danbooru_images(tags: List[str], count: int = 4):
     pool = DanbooruWebpDataPool()
     pipe = SimpleImagePipe(pool)
     images = []
+    exist_ids = set()
     with pipe.batch_retrieve(_iter_ids(tags)) as session:
         for i, item in enumerate(islice(session, count)):
             item: PipeItem
-            images.append((item.id, item.data))
+            if item.id not in exist_ids:
+                images.append((item.id, item.data))
+                exist_ids.add(item.id)
     return images
 
 
