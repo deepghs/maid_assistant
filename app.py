@@ -38,7 +38,9 @@ async def danbooru_command(ctx, *, tags_text: str):
         embed = discord.Embed(
             title="Danbooru Images",
             description=f"This is the search result of tags: {tags!r}.\n"
-                        f"{plural_word(len(result), 'image')} found in total.",
+                        f"{plural_word(len(result), 'image')} found in total.\n"
+                        f"Powered by [deepghs/danbooru2023-webp-4Mpixel_index](https://huggingface.co/datasets/deepghs/danbooru2023-webp-4Mpixel_index) "
+                        f"and [deepghs/cheesechaser](https://github.com/deepghs/cheesechaser).",
             color=0x00ff00
         )
         files = []
