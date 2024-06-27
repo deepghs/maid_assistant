@@ -26,7 +26,7 @@ async def calc_command(ctx, *, expression: str):
         ret_text = f"Result: {result}"
     except Exception as e:
         ret_text = f'Calculation Error: {e}'
-    await ctx.send(ret_text)
+    await ctx.message.reply(ret_text)
 
 
 @bot.command(name='danbooru',
@@ -47,7 +47,7 @@ async def danbooru_command(ctx, *, tags_text: str):
             image.save(dst_file, quality=90)
             files.append(discord.File(dst_file, filename=os.path.basename(dst_file)))
 
-        await ctx.send(embed=embed, files=files)
+        await ctx.message.reply(embed=embed, files=files)
 
 
 @bot.event
