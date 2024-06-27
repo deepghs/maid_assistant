@@ -40,6 +40,10 @@ def _iter_ids(tags: List[str]) -> Iterator[int]:
             if not item.get('parent_id'):
                 yield item['id']
 
+        page_no += 1
+        if page_no > 1000:
+            break
+
 
 def query_danbooru_images(tags: List[str], count: int = 4):
     pool = DanbooruWebpDataPool()
