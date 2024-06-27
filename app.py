@@ -39,7 +39,7 @@ async def danbooru_command(ctx, *, tags_text: str):
             color=0x00ff00
         )
         files = []
-        for id_, image in query_danbooru_images(tags, count=4):
+        for id_, image in query_danbooru_images(tags, count=10):
             dst_file = os.path.join(td, f'{id_}.webp')
             image.save(dst_file, quality=90)
             files.append(discord.File(dst_file, filename=os.path.basename(dst_file)))
