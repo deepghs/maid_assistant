@@ -24,8 +24,9 @@ you need to translate the label into explicit {lang}, as accurate as you can, as
 Do not provide any additional information, so that the script can process in bulk.
 Do not be too long, save some tokens for me!!!
 Please do not use wiki format in answer description text, use the markdown format, this reply will be used in discord messages, PLEASE make sure it is readable and pretty in discord chat.
-Do not have multiple lines directly in description text!!! If some line breaks are necessary, just use text '<br>' to replace the line break characters. 
+Do not have multiple lines directly in description text!!! **If some line breaks are necessary, just use text '<br>' to replace the line break characters.** 
 If some useful links are given in the original description text, select some most important ones and put them into the answer description.
+The mentioned tags part are just for reference, do not mention them too much unless it is really necessary.
 You have to follow the following format, like this example
 
 I Ask:
@@ -138,7 +139,7 @@ def _get_desc(tag: str, use_other_names: bool = False):
                 print(f'', file=sf)
                 for title, title_data in title_attachments:
                     title_found, title_text = _get_desc_by_wiki_data(
-                        title_data, tag=title, use_other_names=False)
+                        title_data, tag=title, use_other_names=use_other_names)
                     if title_found:
                         print(f'### {title}', file=sf)
                         print(f'', file=sf)
