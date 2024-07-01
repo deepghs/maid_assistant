@@ -4,7 +4,7 @@ from pprint import pprint
 from typing import List, Iterator
 
 import httpx
-from cheesechaser.datapool import DanbooruWebpDataPool
+from cheesechaser.datapool import DanbooruNewestWebpDataPool
 from cheesechaser.pipe import SimpleImagePipe, PipeItem
 from waifuc.source import DanbooruSource
 from waifuc.utils import srequest
@@ -46,7 +46,7 @@ def _iter_ids(tags: List[str]) -> Iterator[int]:
 
 
 def query_danbooru_images(tags: List[str], count: int = 4):
-    pool = DanbooruWebpDataPool()
+    pool = DanbooruNewestWebpDataPool()
     pipe = SimpleImagePipe(pool)
     images = []
     exist_ids = set()
