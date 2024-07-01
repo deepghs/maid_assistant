@@ -119,8 +119,8 @@ def _get_desc(tag: str, use_other_names: bool = False):
                       f'information mentioned in tag {tag!r}s description body.', file=sf)
                 print(f'', file=sf)
                 for title, title_data in title_attachments:
-                    title_found, title_text = _get_desc_by_wiki_data(title_data, tag=title,
-                                                                     use_other_names=use_other_names)
+                    title_found, title_text = _get_desc_by_wiki_data(
+                        title_data, tag=title, use_other_names=False)
                     if title_found:
                         print(f'### {title}', file=sf)
                         print(f'', file=sf)
