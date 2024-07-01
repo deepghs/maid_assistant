@@ -55,6 +55,7 @@ You answer:
 
 <{lang} description>
 """
+    logging.info(f'Asking LLM model {model_name!r} ...')
     response = client.chat.completions.create(
         model=model_name,
         messages=[
@@ -161,7 +162,7 @@ def _raw_explain(tag: str, lang: str = 'english', use_other_names: bool = False)
         logging.info(f'Desc of tag {tag!r}:\n{os.linesep.join(desc_lines)}')
     except MarkupError:
         pass
-    result = ask_chatgpt(desc, model_name='gpt-4o', lang=lang)
+    result = ask_chatgpt(desc, lang=lang)
     logging.info(f'Answer: {result}')
 
     if not tag_found:
