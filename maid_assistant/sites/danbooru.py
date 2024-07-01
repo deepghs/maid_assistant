@@ -5,22 +5,14 @@ from functools import lru_cache
 from pprint import pprint
 from typing import List, Iterator
 
-import httpx
 from cheesechaser.datapool import DanbooruNewestWebpDataPool
 from cheesechaser.pipe import SimpleImagePipe, PipeItem
 from huggingface_hub import HfFileSystem
-from waifuc.source import DanbooruSource
 from waifuc.utils import srequest
 
+from ..utils import get_danbooru_session
+
 mimetypes.add_type('image/webp', '.webp')
-
-
-@lru_cache()
-def _get_session() -> httpx.Client:
-    source = DanbooruSource(['1girl'])
-    source._prune_session()
-    return source.session
-
 
 _N_REPO_ID = 'deepghs/danbooru_newest-webp-4Mpixel'
 
@@ -32,7 +24,7 @@ def _current_maxid():
 
 
 def _iter_ids(tags: List[str]) -> Iterator[int]:
-    session = _get_session()
+    session = get_danbooru_session()
     page_no = 1
     while True:
         resp = srequest(

@@ -8,6 +8,7 @@ from hbutils.string import plural_word
 from hbutils.system import TemporaryDirectory
 
 from maid_assistant.calc import safe_eval
+from maid_assistant.explain import tag_explain
 from maid_assistant.sites.danbooru import query_danbooru_images
 
 intents = discord.Intents.default()
@@ -50,6 +51,25 @@ async def danbooru_command(ctx, *, tags_text: str):
             files.append(discord.File(dst_file, filename=os.path.basename(dst_file)))
 
         await ctx.message.reply(embed=embed, files=files)
+
+
+async def explain_command_raw(ctx, *, tag: str, lang: str):
+    try:
+        await ctx.message.reply(tag_explain(tag, lang))
+    except Exception as err:
+        await ctx.message.reply(f'Explain error - {err!r}')
+
+
+@bot.command(name='explain',
+             help='Explain tags in english')
+async def explain_en_command(ctx, *, tag: str):
+    await explain_command_raw(ctx, tag=tag, lang='english')
+
+
+@bot.command(name='explain_cn',
+             help='Explain tags in chinese')
+async def explain_cn_command(ctx, *, tag: str):
+    await explain_command_raw(ctx, tag=tag, lang='simplified chinese')
 
 
 @bot.event
