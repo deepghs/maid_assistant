@@ -36,14 +36,13 @@ async def calc_command(ctx, *, expression: str):
              help='Search danbooru images')
 async def danbooru_command(ctx, *, tags_text: str):
     tags = list(filter(bool, re.split(r'\s+', tags_text)))
-    allowed_ratings = {'g', 's'} if not ctx.channel.is_nsfw() else {'q', 'e'}
     reply_message = await ctx.message.reply(
-        f'Cute maid is searching images with tags {", ".join([f"`{tag}`" for tag in tags])} from danbooru, '
-        f're: {allowed_ratings} ...')
+        f'Cute maid is searching {"NSFW" if ctx.channel.is_nsfw() else "SFW"} images '
+        f'with tags {", ".join([f"`{tag}`" for tag in tags])} from danbooru ...')
     with TemporaryDirectory() as td:
         result = query_danbooru_images(
             tags, count=10,
-            allowed_ratings=allowed_ratings,
+            allowed_ratings={'g', 's'} if not ctx.channel.is_nsfw() else {'q', 'e'},
         )
         embed = discord.Embed(
             title="Danbooru Images",
