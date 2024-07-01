@@ -23,6 +23,7 @@ When I provide an image label, containing its name and its wiki description text
 you need to translate the label into explicit {lang}, as accurate as you can, as provide the {lang} description in a paragraph.
 Do not provide any additional information, so that the script can process in bulk.
 Do not be too long, save some tokens for me!!!
+Please do not use wiki format in answer description text, use the markdown format, this reply will be used in discord messages, PLEASE make sure it is readable and pretty in discord chat.
 Do not have multiple lines directly in description text!!! If some line breaks are necessary, just use text '<br>' to replace the line break characters. 
 If some useful links are given in the original description text, select some most important ones and put them into the answer description.
 You have to follow the following format, like this example
