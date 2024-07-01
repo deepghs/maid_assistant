@@ -58,7 +58,7 @@ async def danbooru_command(ctx, *, tags_text: str):
 async def explain_command_raw(ctx, *, tag: str, lang: str):
     reply_message = await ctx.message.reply(f'Explanation of `{tag}` to {lang} received, generating ...')
     try:
-        reply_text = tag_explain(tag, lang)
+        reply_text = tag_explain(tag, lang, use_other_names=True)
     except Exception as err:
         reply_text = f'Explain error - {err!r}'
 
