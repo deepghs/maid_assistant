@@ -43,7 +43,7 @@ async def danbooru_command(ctx, *, tags_text: str):
     with TemporaryDirectory() as td:
         result = query_danbooru_images(
             tags, count=10,
-            allowed_ratings=
+            allowed_ratings=allowed_ratings,
         )
         embed = discord.Embed(
             title="Danbooru Images",
