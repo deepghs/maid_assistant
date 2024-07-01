@@ -78,6 +78,18 @@ async def explain_cn_command(ctx, *, tag: str):
     await explain_command_raw(ctx, tag=tag, lang='simplified chinese')
 
 
+@bot.command(name='explain_jp',
+             help='Explain tags in japanese')
+async def explain_jp_command(ctx, *, tag: str):
+    await explain_command_raw(ctx, tag=tag, lang='japanese')
+
+
+@bot.command(name='explain_kr',
+             help='Explain tags in korean')
+async def explain_kr_command(ctx, *, tag: str):
+    await explain_command_raw(ctx, tag=tag, lang='korean')
+
+
 @bot.event
 async def on_ready():
     logging.info(f'Bot logged in as {bot.user}')
