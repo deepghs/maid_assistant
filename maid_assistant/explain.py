@@ -133,8 +133,8 @@ def _get_desc(tag: str, use_other_names: bool = False):
 def _raw_explain(tag: str, lang: str = 'english', use_other_names: bool = False):
     tag_found, desc = _get_desc(tag, use_other_names=use_other_names)
     desc_lines = desc.splitlines(keepends=False)
-    if len(desc_lines) > 4:
-        desc_lines = desc_lines[:4] + ['(... more lines)']
+    if len(desc_lines) > 400:
+        desc_lines = desc_lines[:400] + ['(... more lines)']
     try:
         logging.info(f'Desc of tag {tag!r}:\n{os.linesep.join(desc_lines)}')
     except MarkupError:
