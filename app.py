@@ -37,7 +37,7 @@ async def calc_command(ctx, *, expression: str):
 async def danbooru_command(ctx, *, tags_text: str):
     tags = list(filter(bool, re.split(r'\s+', tags_text)))
     reply_message = await ctx.message.reply(
-        f'Cute maid is search tags {", ".join([f"`{tag}`" for tag in tags])} from danbooru ...')
+        f'Cute maid is searching images with tags {", ".join([f"`{tag}`" for tag in tags])} from danbooru ...')
     with TemporaryDirectory() as td:
         result = query_danbooru_images(tags, count=10)
         embed = discord.Embed(
@@ -59,7 +59,8 @@ async def danbooru_command(ctx, *, tags_text: str):
 
 
 async def explain_command_raw(ctx, *, tag: str, lang: str):
-    reply_message = await ctx.message.reply(f'Cute maid is trying to explain tag `{tag}` in {lang} ...')
+    reply_message = await ctx.message.reply(f'Cute maid is trying to understand '
+                                            f'and explain tag `{tag}` in {lang} ...')
     try:
         reply_text = tag_explain(tag, lang, use_other_names=True)
     except Exception as err:
