@@ -9,3 +9,4 @@ httpx
 requests
 openai
 rich
+di-toolkit

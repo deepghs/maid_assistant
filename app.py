@@ -1,15 +1,17 @@
-import logging
 import os
 import re
 
 import discord
 from discord.ext import commands
+from ditk import logging
 from hbutils.string import plural_word
 from hbutils.system import TemporaryDirectory
 
 from maid_assistant.calc import safe_eval
 from maid_assistant.explain import tag_explain
 from maid_assistant.sites.danbooru import query_danbooru_images
+
+logging.try_init_root(logging.INFO)
 
 intents = discord.Intents.default()
 intents.message_content = True
