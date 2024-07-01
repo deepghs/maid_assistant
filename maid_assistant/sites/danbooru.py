@@ -23,9 +23,15 @@ def _current_maxid():
     return max(json.loads(hf_fs.read_text(f'datasets/{_N_REPO_ID}/exist_ids.json')))
 
 
-def _iter_ids(tags: List[str]) -> Iterator[int]:
+_DEFAULT = object()
+_DEFAULT_ALLOWED_RATINGS = {'g', 's', 'q', 'e'}
+
+
+def _iter_ids(tags: List[str], allowed_ratings=_DEFAULT) -> Iterator[int]:
     session = get_danbooru_session()
     page_no = 1
+    if allowed_ratings is _DEFAULT:
+        allowed_ratings = _DEFAULT_ALLOWED_RATINGS
     while True:
         resp = srequest(
             session,
@@ -41,7 +47,7 @@ def _iter_ids(tags: List[str]) -> Iterator[int]:
             break
 
         for item in resp.json():
-            if not item.get('parent_id'):
+            if not item.get('parent_id') and item['rating'] in allowed_ratings:
                 yield item['id']
 
         page_no += 1
@@ -49,14 +55,14 @@ def _iter_ids(tags: List[str]) -> Iterator[int]:
             break
 
 
-def query_danbooru_images(tags: List[str], count: int = 4):
+def query_danbooru_images(tags: List[str], count: int = 4, allowed_ratings=_DEFAULT):
     pool = DanbooruNewestWebpDataPool()
     pipe = SimpleImagePipe(pool)
     images = []
     exist_ids = set()
     if len(tags) < 2:
         tags = [*tags, f'id:<{_current_maxid()}']
-    with pipe.batch_retrieve(_iter_ids(tags)) as session:
+    with pipe.batch_retrieve(_iter_ids(tags, allowed_ratings=allowed_ratings)) as session:
         for i, item in enumerate(session):
             item: PipeItem
             if item.id not in exist_ids:

@@ -39,7 +39,10 @@ async def danbooru_command(ctx, *, tags_text: str):
     reply_message = await ctx.message.reply(
         f'Cute maid is searching images with tags {", ".join([f"`{tag}`" for tag in tags])} from danbooru ...')
     with TemporaryDirectory() as td:
-        result = query_danbooru_images(tags, count=10)
+        result = query_danbooru_images(
+            tags, count=10,
+            allowed_ratings={'g', 's'} if not ctx.channel.is_nsfw else {'q', 'e'}
+        )
         embed = discord.Embed(
             title="Danbooru Images",
             description=f"This is the search result of tags: {tags!r}.\n"
