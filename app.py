@@ -36,10 +36,7 @@ async def calc_command(ctx, *, expression: str):
              help='Search danbooru images')
 async def danbooru_command(ctx, *, tags_text: str):
     tags = list(filter(bool, re.split(r'\s+', tags_text)))
-    print(ctx)
-    print(ctx.channel)
-    print(ctx.channel.is_nsfw)
-    allowed_ratings = {'g', 's'} if not ctx.channel.is_nsfw else {'q', 'e'}
+    allowed_ratings = {'g', 's'} if not ctx.channel.is_nsfw() else {'q', 'e'}
     reply_message = await ctx.message.reply(
         f'Cute maid is searching images with tags {", ".join([f"`{tag}`" for tag in tags])} from danbooru, '
         f're: {allowed_ratings} ...')
