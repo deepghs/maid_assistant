@@ -102,7 +102,7 @@ def _get_wiki_info_by_title(title: str):
         return None
 
 
-def _get_desc(tag: str, use_other_names: bool = False):
+def _get_desc(tag: str, use_other_names: bool = False, max_refs: int = 10):
     session = get_danbooru_session()
     resp = srequest(session, 'GET', f'https://danbooru.donmai.us/wiki_pages/{tag}.json', raise_for_status=False)
     if resp.status_code == 404:
@@ -123,6 +123,8 @@ def _get_desc(tag: str, use_other_names: bool = False):
                 if title_data and title_data['title'] not in exist_related_tag_titles:
                     title_attachments.append((title, title_data))
                     exist_related_tag_titles.add(title_data['title'])
+                    if max_refs is not None and len(title_attachments) >= max_refs:
+                        break
 
         with io.StringIO() as sf:
             found, text = _get_desc_by_wiki_data(resp.json(), tag=tag, use_other_names=use_other_names)
