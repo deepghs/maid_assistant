@@ -28,8 +28,25 @@ If some useful links are given in the original description text, select some mos
 You have to follow the following format, like this example
 
 I Ask:
+
+```
+## Tag '1girl'
+
 Tag: 1girl
 Description: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+## Mentioned Tags Information
+
+### Mentioned Tag 1
+
+xxxxxxxxxxx
+
+### Mentioned Tag 2
+
+xxxxxxxxxxx
+
+...
+```
 
 You answer:
 Tag: <Translated tag name in {lang}>
