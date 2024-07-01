@@ -1,4 +1,6 @@
+import json
 import mimetypes
+import os
 from functools import lru_cache
 from pprint import pprint
 from typing import List, Iterator
@@ -6,6 +8,7 @@ from typing import List, Iterator
 import httpx
 from cheesechaser.datapool import DanbooruNewestWebpDataPool
 from cheesechaser.pipe import SimpleImagePipe, PipeItem
+from huggingface_hub import HfFileSystem
 from waifuc.source import DanbooruSource
 from waifuc.utils import srequest
 
@@ -17,6 +20,15 @@ def _get_session() -> httpx.Client:
     source = DanbooruSource(['1girl'])
     source._prune_session()
     return source.session
+
+
+_N_REPO_ID = 'deepghs/danbooru_newest-webp-4Mpixel'
+
+
+@lru_cache()
+def _current_maxid():
+    hf_fs = HfFileSystem(token=os.environ.get('HF_TOKEN'))
+    return max(json.loads(hf_fs.read_text(f'datasets/{_N_REPO_ID}/exist_ids.json')))
 
 
 def _iter_ids(tags: List[str]) -> Iterator[int]:
@@ -50,6 +62,8 @@ def query_danbooru_images(tags: List[str], count: int = 4):
     pipe = SimpleImagePipe(pool)
     images = []
     exist_ids = set()
+    if len(tags) < 2:
+        tags = [*tags, f'id:<{_current_maxid()}']
     with pipe.batch_retrieve(_iter_ids(tags)) as session:
         for i, item in enumerate(session):
             item: PipeItem
