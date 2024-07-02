@@ -72,7 +72,7 @@ async def danbooru_dl_command(ctx, *, tags_text: str):
     with download_danbooru_images(
             ['surtr_(arknights)'],
             max_count=300,
-            max_total_size=20 * 1024 ** 2,
+            max_total_size=25 * 1024 ** 2,
     ) as (file_count, package_file):
         embed = discord.Embed(
             title="Danbooru Image Pack",
