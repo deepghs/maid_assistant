@@ -111,7 +111,7 @@ def _tag_normalize(tag) -> str:
 
 
 @contextmanager
-def download_danbooru_images(tags: List[str], count: int = 100, allowed_ratings=_DEFAULT):
+def download_danbooru_images(tags: List[str], max_count: int = 100, allowed_ratings=_DEFAULT):
     pool = DanbooruNewestWebpDataPool()
     if len(tags) < 2:
         tags = [*tags, f'id:<{_current_maxid()}']
@@ -129,7 +129,7 @@ def download_danbooru_images(tags: List[str], count: int = 100, allowed_ratings=
                 if item.id not in exist_ids:
                     image_files.append((item.id, item.data))
                     exist_ids.add(item.id)
-                    if len(image_files) >= count:
+                    if len(image_files) >= max_count:
                         break
 
         filename = f'{"__".join(map(_tag_normalize, tags))}__{datetime.now().strftime("%Y%m%d%H%M%S%f")}.zip'
