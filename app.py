@@ -69,7 +69,7 @@ async def danbooru_dl_command(ctx, *, tags_text: str):
     reply_message = await ctx.message.reply(
         f'Cute maid is downloading and packing images '
         f'with tags {", ".join([f"`{tag}`" for tag in tags])} from danbooru ...')
-    with download_danbooru_images(['surtr_(arknights)']) as (file_count, package_file):
+    with download_danbooru_images(['surtr_(arknights)'], count=30) as (file_count, package_file):
         embed = discord.Embed(
             title="Danbooru Image Pack",
             description=f"This is the image package of tags: {tags!r}.\n"
