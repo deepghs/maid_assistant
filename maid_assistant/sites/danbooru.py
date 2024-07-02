@@ -3,6 +3,7 @@ import mimetypes
 import os
 import re
 import shutil
+import zipfile
 from contextlib import contextmanager
 from datetime import datetime
 from functools import lru_cache
@@ -12,7 +13,6 @@ from typing import List, Iterator
 from cheesechaser.datapool import DanbooruNewestWebpDataPool, ResourceNotFoundError, InvalidResourceDataError, DataPool
 from cheesechaser.pipe import SimpleImagePipe, PipeItem, Pipe
 from hbutils.system import TemporaryDirectory
-from hfutils.archive import archive_pack
 from huggingface_hub import HfFileSystem
 from waifuc.utils import srequest
 
@@ -111,7 +111,8 @@ def _tag_normalize(tag) -> str:
 
 
 @contextmanager
-def download_danbooru_images(tags: List[str], max_count: int = 100, allowed_ratings=_DEFAULT):
+def download_danbooru_images(tags: List[str], max_count: int = 100, max_total_size: int = 24 * 1024 ** 2,
+                             allowed_ratings=_DEFAULT):
     pool = DanbooruNewestWebpDataPool()
     if len(tags) < 2:
         tags = [*tags, f'id:<{_current_maxid()}']
@@ -123,21 +124,30 @@ def download_danbooru_images(tags: List[str], max_count: int = 100, allowed_rati
         exist_ids = set()
         pipe = DownloadImagePipe(pool, image_dir)
         image_files = []
+        current_size = 0
         with pipe.batch_retrieve(_iter_ids(tags, allowed_ratings=allowed_ratings)) as session:
             for i, item in enumerate(session):
                 item: PipeItem
                 if item.id not in exist_ids:
+                    if current_size + os.path.getsize(item.data) > max_total_size:
+                        break
+
                     image_files.append((item.id, item.data))
                     exist_ids.add(item.id)
+                    current_size += os.path.getsize(item.data)
                     if len(image_files) >= max_count:
                         break
 
         filename = f'{"__".join(map(_tag_normalize, tags))}__{datetime.now().strftime("%Y%m%d%H%M%S%f")}.zip'
         file_count = os.listdir(image_dir)
         package_file = os.path.join(td, filename)
-        archive_pack('zip', image_dir, archive_file=package_file, clear=True)
+        current_size = 0
+        with zipfile.ZipFile(package_file, 'w') as zf:
+            for _, img_file in image_files:
+                if (current_size + os.path.getsize(img_file)) < max_total_size:
+                    zf.write(img_file, os.path.basename(img_file))
 
-        yield file_count,package_file
+        yield file_count, package_file
 
 
 if __name__ == '__main__':
