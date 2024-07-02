@@ -71,7 +71,6 @@ async def danbooru_dl_command(ctx, *, tags_text: str):
         f'with tags {", ".join([f"`{tag}`" for tag in tags])} from danbooru ...')
     with download_danbooru_images(
             ['surtr_(arknights)'],
-            max_count=300,
             max_total_size=25 * 1024 ** 2,
     ) as (file_count, package_file):
         embed = discord.Embed(

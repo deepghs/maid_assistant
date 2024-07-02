@@ -8,7 +8,7 @@ from contextlib import contextmanager
 from datetime import datetime
 from functools import lru_cache
 from pprint import pprint
-from typing import List, Iterator
+from typing import List, Iterator, Optional
 
 from cheesechaser.datapool import DanbooruNewestWebpDataPool, ResourceNotFoundError, InvalidResourceDataError, DataPool
 from cheesechaser.pipe import SimpleImagePipe, PipeItem, Pipe
@@ -111,7 +111,7 @@ def _tag_normalize(tag) -> str:
 
 
 @contextmanager
-def download_danbooru_images(tags: List[str], max_count: int = 100, max_total_size: int = 24 * 1024 ** 2,
+def download_danbooru_images(tags: List[str], max_count: Optional[int] = None, max_total_size: int = 24 * 1024 ** 2,
                              allowed_ratings=_DEFAULT):
     pool = DanbooruNewestWebpDataPool()
     if len(tags) < 2:
@@ -135,7 +135,7 @@ def download_danbooru_images(tags: List[str], max_count: int = 100, max_total_si
                     image_files.append((item.id, item.data))
                     exist_ids.add(item.id)
                     current_size += os.path.getsize(item.data)
-                    if len(image_files) >= max_count:
+                    if max_count is not None and len(image_files) >= max_count:
                         break
 
         filename = f'{"__".join(map(_tag_normalize, tags))}__{datetime.now().strftime("%Y%m%d%H%M%S%f")}.zip'
