@@ -9,7 +9,7 @@ from hbutils.system import TemporaryDirectory
 
 from maid_assistant.calc import safe_eval
 from maid_assistant.explain import tag_explain
-from maid_assistant.sites.danbooru import query_danbooru_images
+from maid_assistant.sites.danbooru import query_danbooru_images, download_danbooru_images
 
 logging.try_init_root(logging.INFO)
 
@@ -60,6 +60,32 @@ async def danbooru_command(ctx, *, tags_text: str):
 
         await reply_message.delete()
         await ctx.message.reply(embed=embed, files=files)
+
+
+@bot.command(name='danbooru_dl',
+             help='Batch download danbooru images')
+async def danbooru_dl_command(ctx, *, tags_text: str):
+    tags = list(filter(bool, re.split(r'\s+', tags_text)))
+    reply_message = await ctx.message.reply(
+        f'Cute maid is downloading and packing images '
+        f'with tags {", ".join([f"`{tag}`" for tag in tags])} from danbooru ...')
+    with download_danbooru_images(['surtr_(arknights)']) as (file_count, package_file):
+        embed = discord.Embed(
+            title="Danbooru Image Pack",
+            description=f"This is the image package of tags: {tags!r}.\n"
+                        f"{plural_word(len(file_count), 'image')} inside.\n"
+                        f"Powered by [deepghs/danbooru2023-webp-4Mpixel_index](https://huggingface.co/datasets/deepghs/danbooru2023-webp-4Mpixel_index) "
+                        f"and [deepghs/cheesechaser](https://github.com/deepghs/cheesechaser).",
+            color=0x00ff00,
+        )
+
+        await reply_message.delete()
+        await ctx.message.reply(
+            embed=embed,
+            files=[
+                discord.File(package_file, filename=os.path.basename(package_file))
+            ]
+        )
 
 
 async def explain_command_raw(ctx, *, tag: str, lang: str):
