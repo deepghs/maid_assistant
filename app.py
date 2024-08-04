@@ -10,6 +10,7 @@ from hbutils.system import TemporaryDirectory
 from maid_assistant.calc import safe_eval
 from maid_assistant.explain import tag_explain
 from maid_assistant.sites.danbooru import query_danbooru_images, download_danbooru_images
+from maid_assistant.sites.gelbooru import query_gelbooru_images
 
 logging.try_init_root(logging.INFO)
 
@@ -90,6 +91,40 @@ async def danbooru_dl_command(ctx, *, tags_text: str):
                 discord.File(package_file, filename=os.path.basename(package_file))
             ]
         )
+
+
+@bot.command(name='gelbooru',
+             help='Search gelbooru images')
+async def gelbooru_command(ctx, *, tags_text: str):
+    tags = list(filter(bool, re.split(r'\s+', tags_text)))
+    if hasattr(ctx.channel, 'is_nsfw'):
+        is_nsfw = ctx.channel.is_nsfw()
+        level_name = f'{"NSFW" if ctx.channel.is_nsfw() else "SFW"} '
+        allowed_ratings = {'general', 'sensitive'} if not is_nsfw else {'questionable', 'explicit'}
+    else:
+        level_name = ''
+        allowed_ratings = {'general', 'sensitive', 'questionable', 'explicit'}
+    reply_message = await ctx.message.reply(
+        f'Cute maid is searching {level_name}images '
+        f'with tags {", ".join([f"`{tag}`" for tag in tags])} from gelbooru ...')
+    with TemporaryDirectory() as td:
+        result = query_gelbooru_images(tags, count=10, allowed_ratings=allowed_ratings)
+        embed = discord.Embed(
+            title="Gelbooru Images",
+            description=f"This is the search result of tags: {tags!r}.\n"
+                        f"{plural_word(len(result), 'image')} found in total.\n"
+                        f"Powered by [deepghs/gelbooru-webp-4Mpixel](https://huggingface.co/datasets/deepghs/gelbooru-webp-4Mpixel) "
+                        f"and [deepghs/cheesechaser](https://github.com/deepghs/cheesechaser).",
+            color=0x0000ff
+        )
+        files = []
+        for id_, image in result:
+            dst_file = os.path.join(td, f'{id_}.webp')
+            image.save(dst_file, quality=90)
+            files.append(discord.File(dst_file, filename=os.path.basename(dst_file)))
+
+        await reply_message.delete()
+        await ctx.message.reply(embed=embed, files=files)
 
 
 async def explain_command_raw(ctx, *, tag: str, lang: str):
