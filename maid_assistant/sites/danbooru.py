@@ -84,8 +84,8 @@ class DownloadImagePipe(Pipe):
         Pipe.__init__(self, pool)
         self.dst_dir = dst_dir
 
-    def retrieve(self, resource_id, resource_metainfo):
-        with self.pool.mock_resource(resource_id, resource_metainfo) as (td, resource_metainfo):
+    def retrieve(self, resource_id, resource_metainfo, silent: bool = False):
+        with self.pool.mock_resource(resource_id, resource_metainfo, silent=silent) as (td, resource_metainfo):
             files = os.listdir(td)
             image_files = []
             for file in files:

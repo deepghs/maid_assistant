@@ -2,7 +2,7 @@ hfutils>=0.2.8
 huggingface_hub>=0.23.4
 discord.py
 git+https://github.com/deepghs/waifuc.git@main#egg=waifuc[video]
-git+https://github.com/deepghs/cheesechaser.git@main#egg=cheesechaser
+cheesechaser>=0.2.0
 dghs-imgutils>=0.4.6
 hbutils>=0.9.1
 httpx
